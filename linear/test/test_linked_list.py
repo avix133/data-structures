@@ -68,37 +68,35 @@ class TestLinkedList:
         linked_list.insert_after(3, 4)
         assert list(linked_list) == [3, 4]
 
-    def test_remove_first(self):
-        self.prepared_linked_list.remove_first()
+    def test_poll(self):
+        assert self.prepared_linked_list.poll() == 12
         assert list(self.prepared_linked_list) == [8, 2, 5]
 
-        self.prepared_linked_list.remove_first()
+        assert self.prepared_linked_list.poll() == 8
         assert list(self.prepared_linked_list) == [2, 5]
 
-        self.prepared_linked_list.remove_first()
+        assert self.prepared_linked_list.poll() == 2
         assert list(self.prepared_linked_list) == [5]
 
-        self.prepared_linked_list.remove_first()
+        assert self.prepared_linked_list.poll() == 5
         assert list(self.prepared_linked_list) == []
 
-        with pytest.raises(IndexError):
-            self.prepared_linked_list.remove_first()
+        assert not self.prepared_linked_list.poll()
 
-    def test_remove_last(self):
-        self.prepared_linked_list.remove_last()
+    def test_pop(self):
+        assert self.prepared_linked_list.pop() == 5
         assert list(self.prepared_linked_list) == [12, 8, 2]
 
-        self.prepared_linked_list.remove_last()
+        assert self.prepared_linked_list.pop() == 2
         assert list(self.prepared_linked_list) == [12, 8]
 
-        self.prepared_linked_list.remove_last()
+        assert self.prepared_linked_list.pop() == 8
         assert list(self.prepared_linked_list) == [12]
 
-        self.prepared_linked_list.remove_last()
+        assert self.prepared_linked_list.pop() == 12
         assert list(self.prepared_linked_list) == []
 
-        with pytest.raises(IndexError):
-            self.prepared_linked_list.remove_last()
+        assert not self.prepared_linked_list.pop()
 
     def test_remove(self):
         self.prepared_linked_list.remove(2)
@@ -151,16 +149,16 @@ class TestLinkedList:
     def test_len(self):
         assert len(self.prepared_linked_list) == 4
 
-        self.prepared_linked_list.remove_last()
+        self.prepared_linked_list.pop()
         assert len(self.prepared_linked_list) == 3
 
-        self.prepared_linked_list.remove_first()
+        self.prepared_linked_list.poll()
         assert len(self.prepared_linked_list) == 2
 
-        self.prepared_linked_list.remove_first()
+        self.prepared_linked_list.poll()
         assert len(self.prepared_linked_list) == 1
 
-        self.prepared_linked_list.remove_last()
+        self.prepared_linked_list.pop()
         assert len(self.prepared_linked_list) == 0
 
     def test_iter(self):

@@ -5,21 +5,21 @@ class LinkedList:
             self.next = next_node
 
         def __eq__(self, other):
-            return self.value == other.value and self.next == other.next
+            return self.value == other.value and self.next is other.next
 
     EMPTY_LIST_ERROR_MSG = 'List is empty!'
 
     def __init__(self):
-        self.__head = None
+        self._head = None
 
     def add_first(self, value):
         """ A -> B -> C -> D -> None
             E -> A -> B -> C -> D -> None"""
         new_node = self.Node(value=value)
 
-        if self.__head:
-            new_node.next = self.__head
-        self.__head = new_node
+        if self._head:
+            new_node.next = self._head
+        self._head = new_node
 
     def add_last(self, value):
         """ A -> B -> C -> D -> None
@@ -32,17 +32,17 @@ class LinkedList:
         if last_node:
             last_node.next = new_node
         else:
-            self.__head = new_node
+            self._head = new_node
 
     def insert_after(self, item, value):
         """Inserting F after C:
             A -> B -> C -> D -> None
-            A -> B -> C-> -> F -> D -> None"""
+            A -> B -> C -> F -> D -> None"""
 
-        if not self.__head:
+        if not self._head:
             raise IndexError(self.EMPTY_LIST_ERROR_MSG)
 
-        node = self.__head
+        node = self._head
         while node and node.value != item:
             node = node.next
 
@@ -56,14 +56,14 @@ class LinkedList:
         """ Removing C:
             A -> B -> C -> D -> None
             A -> B -> D -> None"""
-        if not self.__head:
+        if not self._head:
             raise IndexError(self.EMPTY_LIST_ERROR_MSG)
 
-        if self.__head.value == value:
-            self.remove_first()
+        if self._head.value == value:
+            self.poll()
         else:
-            previous = self.__head
-            node = self.__head.next
+            previous = self._head
+            node = self._head.next
             while node and node.value != value:
                 previous = node
                 node = node.next
@@ -72,58 +72,57 @@ class LinkedList:
             else:
                 raise ValueError(f'No such value: {value}')
 
-    def remove_first(self):
+    def poll(self):
         """ A -> B -> C -> D -> None
             B -> C -> D -> None"""
-        if not self.__head:
-            raise IndexError(self.EMPTY_LIST_ERROR_MSG)
-        self.__head = self.__head.next
+        if not self._head:
+            return None
+        result_node = self._head
+        self._head = self._head.next
+        return result_node.value
 
-    def remove_last(self):
+    def pop(self):
         """ A -> B -> C -> D -> None
             A -> B -> C -> None"""
-        if not self.__head:
-            raise IndexError(self.EMPTY_LIST_ERROR_MSG)
+        if not self._head:
+            return None
 
         previous = None
-        node = self.__head
+        node = self._head
         while node.next:
             previous = node
             node = node.next
         if previous:
+            result_node = previous.next
             previous.next = None
         else:
-            self.__head = None
+            result_node = self._head
+            self._head = None
+        return result_node.value
 
     def reverse(self):
         """ A -> B -> C -> D -> None
             D -> C -> B -> A -> None"""
         previous = None
-        node = self.__head
+        node = self._head
         while node:
             node_next = node.next
             node.next = previous
             previous = node
             node = node_next
-        self.__head = previous
+        self._head = previous
 
     def __node_iter(self):
-        node = self.__head
+        node = self._head
         while node:
             yield node
             node = node.next
 
     def __contains__(self, item):
-        for value in self:
-            if item == value:
-                return True
-        return False
+        return any(item == value for value in self)
 
     def __len__(self):
-        count = 0
-        for _ in self:
-            count += 1
-        return count
+        return sum(1 for _ in self)
 
     def __str__(self):
         return "[{}]".format(", ".join(map(str, self)))
@@ -131,4 +130,3 @@ class LinkedList:
     def __iter__(self):
         """:returns values iterator"""
         return iter(map(lambda node: node.value, self.__node_iter()))
-
